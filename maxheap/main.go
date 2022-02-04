@@ -61,6 +61,7 @@ func (h *MaxHeap) maxHeapifyDown(index int) {
 			index = childToCompare
 			l, r = left(index), right(index)
 		} else {
+			// right place
 			return
 		}
 
