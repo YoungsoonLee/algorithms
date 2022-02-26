@@ -2,53 +2,44 @@ package main
 
 import "fmt"
 
-// Heap is a really complete tree
-// it means the parent have 2 childs or null
-// MaxHeap struct has a slice that holds the array
+// MaHeap
 type MaxHeap struct {
 	array []int
 }
 
-// NewMaxHeap ...
-func NewMaxHeap() *MaxHeap {
-	return &MaxHeap{}
-}
-
-// Insert adds an element to the heap
 func (h *MaxHeap) Insert(k int) {
 	h.array = append(h.array, k)
-	h.heapifyUp(len(h.array) - 1)
+	h.maxHeapifyUp(len(h.array) - 1)
 }
 
-// Extract returns the largest key, and remove it from the heap
 func (h *MaxHeap) Extract() int {
 	extracted := h.array[0]
-	l := len(h.array) - 1
 
 	if len(h.array) == 0 {
-		fmt.Println("cannot extract because array length is 0")
 		return -1
 	}
 
-	h.array[0] = h.array[l]
-	h.array = h.array[:l]
-	h.heapifyDown(0)
+	h.array[0] = h.array[len(h.array)-1]
+	h.array = h.array[:len(h.array)-1]
+	h.maxHeapifyDown(0)
+
 	return extracted
 }
 
-func (h *MaxHeap) heapifyUp(index int) {
-	for h.array[parentIndex(index)] < h.array[index] {
-		h.swap(parentIndex(index), index)
-		index = parentIndex(index)
+func (h *MaxHeap) maxHeapifyUp(index int) {
+	for h.array[parent(index)] < h.array[index] {
+		h.swap(parent(index), index)
+		index = parent(index)
 	}
 }
 
-func (h *MaxHeap) heapifyDown(index int) {
+func (h *MaxHeap) maxHeapifyDown(index int) {
 	lastIndex := len(h.array) - 1
-	l, r := leftIndex(index), rightIndex(index)
+	l, r := left(index), right(index)
 	childToCompare := 0
 
 	// loop while index has at least one child
+	// because heap is compeletly binary tree
 	for l <= lastIndex {
 		if l == lastIndex { // when left child is the only child
 			childToCompare = l
@@ -61,44 +52,41 @@ func (h *MaxHeap) heapifyDown(index int) {
 		if h.array[index] < h.array[childToCompare] {
 			h.swap(index, childToCompare)
 			index = childToCompare
-			l, r = leftIndex(index), rightIndex(index)
+			l, r = left(index), right(index)
 		} else {
 			return
 		}
-
 	}
+
+}
+
+func parent(i int) int {
+	return (i - 1) / 2
+}
+
+func left(i int) int {
+	return 2*i + 1
+}
+
+func right(i int) int {
+	return 2*i + 2
 }
 
 func (h *MaxHeap) swap(i, j int) {
 	h.array[i], h.array[j] = h.array[j], h.array[i]
 }
 
-func parentIndex(i int) int {
-	return (i - 1) / 2
-}
-
-func leftIndex(i int) int {
-	return (i * 2) + 1
-}
-
-func rightIndex(i int) int {
-	return (i * 2) + 2
-}
-
 func main() {
-	test := NewMaxHeap()
-	fmt.Println(test)
-
-	test.Insert(5)
-	test.Insert(6)
-	test.Insert(1)
-	test.Insert(10)
-	test.Insert(8)
-	test.Insert(9)
-	fmt.Println(test)
-
-	for i := 0; i < 3; i++ {
-		test.Extract()
-		fmt.Println(test)
+	m := &MaxHeap{}
+	h := []int{10, 20, 30, 5, 7, 9, 11, 13, 15, 17}
+	for _, v := range h {
+		m.Insert(v)
+		fmt.Println(m)
 	}
+
+	for i := 0; i < 5; i++ {
+		m.Extract()
+		fmt.Println(m)
+	}
+
 }

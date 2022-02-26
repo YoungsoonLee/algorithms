@@ -1,13 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-// Graph struct
+// Graph
 type Graph struct {
 	vertices []*Vertex
 }
 
-// Vertex struct
+// Vertex
 type Vertex struct {
 	key      int
 	adjacent []*Vertex
@@ -16,7 +18,7 @@ type Vertex struct {
 // Add vertex
 func (g *Graph) AddVertex(k int) {
 	if contains(g.vertices, k) {
-		fmt.Println("Vertex already exists")
+		fmt.Println("ERROR: Already exists")
 		return
 	}
 
@@ -26,24 +28,23 @@ func (g *Graph) AddVertex(k int) {
 // Add Edge
 func (g *Graph) AddEdge(from, to int) {
 	// get vertex
-	fromVertex := g.getVertex(from)
-	toVertex := g.getVertex(to)
+	fromV := g.getVertex(from)
+	toV := g.getVertex(to)
+
 	// check error
-	if fromVertex == nil || toVertex == nil {
-		// error
-		fmt.Println("ERROR: not exists vertex")
+	if fromV == nil || toV == nil {
+		err := fmt.Errorf("ERROR: invalid edge %v -> %v", from, to)
+		fmt.Println(err.Error())
 		return
-	} else if contains(fromVertex.adjacent, to) {
-		fmt.Printf("ERROR: Existing edge(%v -> %v)\n", from, to)
+	} else if contains(fromV.adjacent, to) {
+		fmt.Println("ERROR: Existin")
 		return
 	}
 
 	// add edge
-	fromVertex.adjacent = append(fromVertex.adjacent, toVertex)
-
+	fromV.adjacent = append(fromV.adjacent, toV)
 }
 
-// getVertex
 func (g *Graph) getVertex(k int) *Vertex {
 	for i, v := range g.vertices {
 		if v.key == k {
@@ -68,7 +69,7 @@ func (g *Graph) Print() {
 	for _, v := range g.vertices {
 		fmt.Printf("\nVertex %v: ", v.key)
 		for _, v := range v.adjacent {
-			fmt.Printf(" %v ", v.key)
+			fmt.Printf(" %v", v.key)
 		}
 	}
 	fmt.Println()
@@ -82,8 +83,8 @@ func main() {
 	}
 
 	test.AddEdge(1, 2)
-	test.AddEdge(1, 2)
 	test.AddEdge(6, 2)
+	test.AddEdge(1, 2)
 
 	test.Print()
 }
